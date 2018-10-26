@@ -42,12 +42,12 @@ runProgram state prog = void $ go prog state
 
 runExpr :: Expr -> State -> IO State
 runExpr (Command cmd) state  = runCommand state cmd
-runExpr (Loop seq) state = go 0 seq state
+runExpr (Loop seq) state = go seq state
   where
-    go :: Int -> S.Seq Expr -> State -> IO State
-    go index (x S.:<| xs) st = go (index + 1) xs =<< runExpr x st
-    go index S.Empty st = if getCurrentByte st /= 0
-                             then go 0 seq st
+    go :: S.Seq Expr -> State -> IO State
+    go (x S.:<| xs) st = go xs =<< runExpr x st
+    go S.Empty st = if getCurrentByte st /= 0
+                             then go seq st
                              else return st
 
 initialState :: State
