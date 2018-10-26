@@ -4,6 +4,9 @@
 module Lib
     ( Expr(..)
     , Program(..)
+    , Cmd(..)
+    , runProgram
+    , initialState
     ) where
 
 import Control.Monad (void)
@@ -26,7 +29,7 @@ data Cmd = IncPointer
          | PrintByte
          | GetByte
 
-data Expr = Command Cmd | Loop (S.Seq Cmd)
+data Expr = Command Cmd | Loop (S.Seq Expr)
 
 newtype Program = Program (S.Seq Expr)
 
@@ -34,15 +37,15 @@ runProgram :: State -> Program -> IO ()
 runProgram state prog = void $ go prog state
   where
     go :: Program -> State -> IO State
-    go (Program (x S.:<| xs)) st = go (Program xs) =<< runExpr st x
+    go (Program (x S.:<| xs)) st = go (Program xs) =<< runExpr x st
     go (Program S.Empty) st = return st
 
-runExpr :: State -> Expr -> IO State
-runExpr state (Command cmd) = runCommand state cmd
-runExpr state (Loop seq) = go 0 seq state
+runExpr :: Expr -> State -> IO State
+runExpr (Command cmd) state  = runCommand state cmd
+runExpr (Loop seq) state = go 0 seq state
   where
-    go :: Int -> S.Seq Cmd -> State -> IO State
-    go index (x S.:<| xs) st = go (index + 1) xs =<< runCommand st x
+    go :: Int -> S.Seq Expr -> State -> IO State
+    go index (x S.:<| xs) st = go (index + 1) xs =<< runExpr x st
     go index S.Empty st = if getCurrentByte st /= 0
                              then go 0 seq st
                              else return st
