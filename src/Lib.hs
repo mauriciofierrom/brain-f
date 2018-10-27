@@ -11,11 +11,8 @@ module Lib
 
 import Control.Monad (void)
 import Data.Char (chr, ord)
-import Data.Foldable (toList)
 import Data.Maybe (fromMaybe)
 import qualified Data.Sequence as S (Seq(..), fromList, update, lookup, (|>), Seq((:<|)))
-import Data.Strings (byteToChar)
-import Data.Word (Word8)
 
 type Pointer = Int
 type Byte = Int
@@ -28,10 +25,11 @@ data Cmd = IncPointer
          | DecByte
          | PrintByte
          | GetByte
+         deriving Show
 
-data Expr = Command Cmd | Loop (S.Seq Expr)
+data Expr = Command Cmd | Loop (S.Seq Expr) deriving Show
 
-newtype Program = Program (S.Seq Expr)
+newtype Program = Program (S.Seq Expr) deriving Show
 
 runProgram :: State -> Program -> IO ()
 runProgram state prog = void $ go prog state
@@ -42,12 +40,12 @@ runProgram state prog = void $ go prog state
 
 runExpr :: Expr -> State -> IO State
 runExpr (Command cmd) state  = runCommand state cmd
-runExpr (Loop seq) state = go seq state
+runExpr (Loop lseq) state = go lseq state
   where
     go :: S.Seq Expr -> State -> IO State
     go (x S.:<| xs) st = go xs =<< runExpr x st
     go S.Empty st = if getCurrentByte st /= 0
-                             then go seq st
+                             then go lseq st
                              else return st
 
 initialState :: State

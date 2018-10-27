@@ -23,6 +23,9 @@ dependencies:
 - base >= 4.7 && < 5
 - strings
 - containers
+- megaparsec
+- parser-combinators
+- text
 
 library:
   source-dirs: src
