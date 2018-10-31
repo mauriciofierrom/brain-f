@@ -21,5 +21,5 @@ main = do
     Nothing   -> putStrLn "You must enter the code you want to execute"
 
 prepareArgs :: [String] -> Maybe T.Text
-prepareargs (x:_) = Just (T.strip . T.pack $ x)
+prepareArgs (x:_) = Just (T.strip . T.pack $ x)
 prepareArgs [] = Nothing

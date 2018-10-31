@@ -51,6 +51,7 @@ command = plus
         <|> comma
         <|> lg
         <|> gt
+        <|> loop
 
 expr :: Parser Expr
 expr = command <|> loop
