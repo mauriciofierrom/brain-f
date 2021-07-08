@@ -1,0 +1,57 @@
+cabal-version:      2.4
+name:               brainfuck
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis:
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- The license under which the package is released.
+-- license:
+author:             Mauricio Fierro
+maintainer:         mauriciofierrom@gmail.com
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+library
+    exposed-modules:
+        Lib
+        Parsing
+
+    -- Modules included in this library but not exported.
+    -- other-modules:
+    other-extensions: GADTs RecordWildCards OverloadedStrings
+    build-depends:
+        base ^>=4.12.0.0,
+        containers ^>=0.6.0.1,
+        text ^>=1.2.3.1,
+        megaparsec,
+
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+executable brainfuck
+    main-is:          Main.hs
+
+    -- Modules included in this executable, other than Main.
+    -- other-modules:
+    other-extensions: GADTs RecordWildCards OverloadedStrings
+    build-depends:
+        base ^>=4.12.0.0,
+        containers ^>=0.6.0.1,
+        text ^>=1.2.3.1,
+        megaparsec,
+        brainfuck
+
+    hs-source-dirs:   app
+    default-language: Haskell2010
