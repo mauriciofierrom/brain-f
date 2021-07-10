@@ -75,7 +75,7 @@ getCurrentByte State{..} = fromMaybe (error "Out of bounds. ")
                                      (S.lookup pointer  bytes)
 
 printByte :: State -> IO ()
-printByte st = print . chr . fromIntegral $ getCurrentByte st
+printByte st = putChar . chr . fromIntegral $ getCurrentByte st
 
 getByte :: State -> IO State
 getByte s@State{..} = do

@@ -1,25 +1,42 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE FlexibleInstances  #-}
+{-# LANGUAGE OverloadedStrings  #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeOperators      #-}
 
 module Main where
 
-import qualified Data.Text as T (pack, strip, Text)
+import           Options.Generic
+import           System.Environment    (getArgs)
+import           Text.Megaparsec       (runParser)
+import           Text.Megaparsec.Error (showErrorComponent)
 
-import System.Environment (getArgs)
-import Text.Megaparsec (runParser)
-import Text.Megaparsec.Error (showErrorComponent)
+import qualified Data.Text             as T (Text, pack, strip)
+import qualified Data.Text.IO          as TIO
 
-import Lib
-import Parsing
+import           Lib
+import           Parsing
+
+data Options w =
+  Options
+    { file   :: w ::: Maybe FilePath <?> "A .b or .bf file to execute"
+    , source :: w ::: Maybe String <?> "Source code to execute"
+    } deriving (Generic)
+
+instance ParseRecord (Options Wrapped)
+deriving instance Show (Options Wrapped)
 
 main :: IO ()
 main = do
-  args <- getArgs
-  case prepareArgs args of
-    Just code -> case runParser program [] code of
-                   Left err -> putStrLn "Whatever error happened"
-                   Right program -> runProgram initialState program
-    Nothing   -> putStrLn "You must enter the code you want to execute"
+  opts <- unwrapRecord "Execute brainfuck"
+  case opts of
+    (Options (Just _) (Just _)) -> putStrLn "You must provide either a program or a filepath, not both"
+    (Options (Just f) _)         -> runIt =<< TIO.readFile f
+    (Options _        (Just s)) -> runIt (T.strip . T.pack $ s)
 
-prepareArgs :: [String] -> Maybe T.Text
-prepareArgs (x:_) = Just (T.strip . T.pack $ x)
-prepareArgs [] = Nothing
+runIt :: Text -> IO ()
+runIt code =
+  case runParser program [] code of
+    Left err      -> print err
+    Right program -> runProgram initialState program

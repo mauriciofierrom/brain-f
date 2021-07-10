@@ -32,7 +32,7 @@ library
     -- other-modules:
     other-extensions: GADTs RecordWildCards OverloadedStrings
     build-depends:
-        base ^>=4.12.0.0,
+        base ^>=4.14.1.0,
         containers ^>=0.6.0.1,
         text ^>=1.2.3.1,
         megaparsec,
@@ -47,10 +47,11 @@ executable brainfuck
     -- other-modules:
     other-extensions: GADTs RecordWildCards OverloadedStrings
     build-depends:
-        base ^>=4.12.0.0,
+        base ^>=4.14.1.0,
         containers ^>=0.6.0.1,
         text ^>=1.2.3.1,
         megaparsec,
+        optparse-generic,
         brainfuck
 
     hs-source-dirs:   app
