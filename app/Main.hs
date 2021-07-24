@@ -34,6 +34,7 @@ main = do
     (Options (Just _) (Just _)) -> putStrLn "You must provide either a program or a filepath, not both"
     (Options (Just f) _)         -> runIt =<< TIO.readFile f
     (Options _        (Just s)) -> runIt (T.strip . T.pack $ s)
+    (Options _ _) -> putStrLn "You must provide either a programor a filepath."
 
 runIt :: Text -> IO ()
 runIt code =
